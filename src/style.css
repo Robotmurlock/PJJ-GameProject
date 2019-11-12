@@ -1,0 +1,8 @@
+body {
+    background-image: url(../images/background.jpg);
+}
+
+#tetris {
+    background-color: darkblue;
+    text-align:center;
+}
