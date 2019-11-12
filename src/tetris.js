@@ -2,18 +2,19 @@
 const game_canvas = document.getElementById("tetris");
 const game_context = game_canvas.getContext("2d");
 
+// board constants
 const NUMBER_OF_ROWS = 20;
 const NUMBER_OF_COLUMNS = 20
 const BLOCK_SIZE = 30
-const BLOCK_EMPTY_COLOR = "WHITE";
+const BLOCK_EMPTY_COLOR = "white";
 
 const draw_square = function(row, col, color) {
     game_context.fillStyle = color;
     game_context.fillRect(row*BLOCK_SIZE, col*BLOCK_SIZE, 
-                          (row+1)*BLOCK_SIZE, (col+1)*BLOCK_SIZE);
-    game_context.strokeStyle = "BLACK";
+                          BLOCK_SIZE, BLOCK_SIZE);
+    game_context.strokeStyle = "black";
     game_context.strokeRect(row*BLOCK_SIZE, col*BLOCK_SIZE, 
-                            (row+1)*BLOCK_SIZE, (col+1)*BLOCK_SIZE);
+                            BLOCK_SIZE, BLOCK_SIZE);
 }
 
 const draw_board = function(board) {
@@ -24,13 +25,123 @@ const draw_board = function(board) {
     }
 }
 
-let game_board = []
-for(let row=0; row<NUMBER_OF_ROWS; row++) {
-    game_board[row] = []
-    for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
-        game_board[row][col] = BLOCK_EMPTY_COLOR
+const types = [I, J, L, O, S, T, Z]
+const colors = ["red", "blue", "green", "orange", "purple", "yellow"]
+
+// generates new random piece with random color
+const Piece = function() {
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.type = types[Math.floor(Math.random() * types.length)];
+    this.size_x = this.type[0].length
+    this.size_y = this.type[0][0].length
+    this.pos_x = NUMBER_OF_COLUMNS/2;
+    this.pos_y = 0;
+    this.state = 0;
+}
+
+Piece.prototype.draw = function() {
+    for(let x=0; x<this.size_x; x++) {
+        for(let y=0; y<this.size_y; y++) {
+            if(this.type[this.state][x][y] == 1) {
+                draw_square(this.pos_x + x, this.pos_y + y, this.color);
+            }
+        }
     }
 }
 
-draw_board(game_board)
+const valid_position = function(x, y) {
+    if(x < 0)
+        return false;
+    if(y < 0)
+        return false;
+    if(x >= NUMBER_OF_COLUMNS)
+        return false;
+    if(y >= NUMBER_OF_ROWS)
+        return false;
+    return true;
+}
+
+Piece.prototype.check = function(x, y, state) {
+    shape = this.type[state];
+    for(let i=0; i<this.size_x; i++) {
+        for(let j=0; j<this.size_y; j++) {
+            if(shape[i][j] == 1 && !valid_position(y+j, x+i, state))
+                return false;
+        }
+    }
+
+    return true;
+}
+
+Piece.prototype.update = function(x, y, state) {
+    if(this.check(x, y, state)) {
+        let tmp = this.color;
+        this.color = BLOCK_EMPTY_COLOR;
+        this.draw();
+        this.pos_x = x;
+        this.pos_y = y;
+        this.state = state;
+        this.color = tmp;
+        this.draw();
+    }
+}
+
+Piece.prototype.up = function() {
+    let new_y = this.pos_y-1;
+    this.update(this.pos_x, new_y, this.state);
+}
+Piece.prototype.down = function() {
+    let new_y = this.pos_y+1;
+    this.update(this.pos_x, new_y, this.state);
+}
+Piece.prototype.left = function() {
+    let new_x = this.pos_x-1;
+    this.update(new_x, this.pos_y, this.state);
+}
+Piece.prototype.right = function() {
+    let new_x = this.pos_x+1;
+    this.update(new_x, this.pos_y, this.state);
+}
+Piece.prototype.rotate = function() {
+    // There are 4 states for every piece
+    let new_state = this.state+1;
+    if(new_state == 4)
+        new_state = 0;
+    this.update(this.pos_x, this.pos_y, new_state);
+}
+
+// keyboard listener
+document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 37) {
+        piece.left();
+    }
+    else if(event.keyCode == 39) {
+        piece.right();
+    }
+    else if(event.keyCode == 38) {
+        piece.up();
+    } else if(event.keyCode == 40) {    
+        piece.down();
+    } else if(event.keyCode == 32) {
+        piece.rotate();
+    }
+});
+
+const start = function() {
+    let game_board = []
+    // set default block colors
+    for(let row=0; row<NUMBER_OF_ROWS; row++) {
+        game_board[row] = []
+        for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
+            game_board[row][col] = BLOCK_EMPTY_COLOR
+        }
+    }
+
+    draw_board(game_board);
+    piece = new Piece();
+    console.log(piece);
+    piece.draw();
+}
+
+start();
 
