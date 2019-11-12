@@ -4,11 +4,16 @@ const game_context = game_canvas.getContext("2d");
 
 // board constants
 const NUMBER_OF_ROWS = 20;
-const NUMBER_OF_COLUMNS = 20
-const BLOCK_SIZE = 30
+const NUMBER_OF_COLUMNS = 20;
+const BLOCK_SIZE = 30;
 const BLOCK_EMPTY_COLOR = "white";
 
+// game status values
+var game_speed = 1000;
+var game_board = []
+
 const draw_square = function(row, col, color) {
+    game_board[row][col] = color;
     game_context.fillStyle = color;
     game_context.fillRect(row*BLOCK_SIZE, col*BLOCK_SIZE, 
                           BLOCK_SIZE, BLOCK_SIZE);
@@ -30,6 +35,10 @@ const colors = ["red", "blue", "green", "orange", "purple", "yellow"]
 
 // generates new random piece with random color
 const Piece = function() {
+    this.generate();
+}
+
+Piece.prototype.generate = function() {
     this.color = colors[Math.floor(Math.random() * colors.length)];
     this.type = types[Math.floor(Math.random() * types.length)];
     this.size_x = this.type[0].length
@@ -37,6 +46,8 @@ const Piece = function() {
     this.pos_x = NUMBER_OF_COLUMNS/2;
     this.pos_y = 0;
     this.state = 0;
+
+    this.timer = setInterval(this.falling, game_speed);
 }
 
 Piece.prototype.draw = function() {
@@ -73,6 +84,43 @@ Piece.prototype.check = function(x, y, state) {
     return true;
 }
 
+const max = function(a, b) {
+    return (a>b) ? a : b;
+}
+
+Piece.prototype.restart = function() {
+    clearInterval(this.timer);
+    this.generate();
+}
+
+Piece.prototype.collision = function() {
+    let shape = this.type[this.state];
+    let bottoms = [];
+    let max_bottom = undefined;
+    for(let i=0; i<this.size_x; i++) {
+        bottoms[i] = null;
+        for(let j=this.size_y-1; j>=0; j--)
+            if(shape[i][j] == 1) {
+                bottoms[i] = j;
+                max_bottom = max(max_bottom, j);
+                break;
+            }
+    }
+
+    if(this.pos_y + max_bottom + 1 >= NUMBER_OF_ROWS)
+        return true;
+
+    for(let i=0; i<this.size_x; i++) {
+        let b = bottoms[i];
+        if(this.pos_x+i < NUMBER_OF_ROWS 
+            && this.pos_y + b + 1 < NUMBER_OF_COLUMNS
+            && game_board[this.pos_x+i][this.pos_y + b + 1] != BLOCK_EMPTY_COLOR)
+            return true;
+    }
+
+    return false;
+}
+
 Piece.prototype.update = function(x, y, state) {
     if(this.check(x, y, state)) {
         let tmp = this.color;
@@ -83,6 +131,10 @@ Piece.prototype.update = function(x, y, state) {
         this.state = state;
         this.color = tmp;
         this.draw();
+    }
+
+    if(this.collision()) {
+        this.restart();
     }
 }
 
@@ -119,7 +171,7 @@ document.addEventListener('keydown', function(event) {
         piece.right();
     }
     else if(event.keyCode == 38) {
-        piece.up();
+        //piece.up();
     } else if(event.keyCode == 40) {    
         piece.down();
     } else if(event.keyCode == 32) {
@@ -127,8 +179,12 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// timer function
+Piece.prototype.falling = function() {
+    piece.down();
+}
+
 const start = function() {
-    let game_board = []
     // set default block colors
     for(let row=0; row<NUMBER_OF_ROWS; row++) {
         game_board[row] = []
