@@ -7,10 +7,13 @@ const NUMBER_OF_ROWS = 20;
 const NUMBER_OF_COLUMNS = 20;
 const BLOCK_SIZE = 30;
 const BLOCK_EMPTY_COLOR = "white";
+const BLOCK_DEAD_COLOR = "gray";
 
 // game status values
 var game_speed = 1000;
+var game_row_block_count = []
 var game_board = []
+var game_layer_to_destroy_index = 0;
 
 const draw_square = function(row, col, color) {
     game_board[row][col] = color;
@@ -22,12 +25,32 @@ const draw_square = function(row, col, color) {
                             BLOCK_SIZE, BLOCK_SIZE);
 }
 
-const draw_board = function(board) {
+const draw_board = function() {
     for(let row=0; row<NUMBER_OF_ROWS; row++) {
         for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
-            draw_square(row, col, board[row][col])
+            draw_square(row, col, game_board[row][col])
         }
     }
+}
+
+const layer_blackout = function() {
+    let index = game_layer_to_destroy_index;
+    for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
+        game_board[col][index] = BLOCK_DEAD_COLOR;
+        draw_square(col, index, BLOCK_DEAD_COLOR);
+    }
+}
+
+const destroy_board_layer = function() {
+    let index = game_layer_to_destroy_index;
+    for(let layer=index; layer>0; layer--) {
+        for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
+            game_board[col][layer] = game_board[col][layer-1];
+            game_row_block_count[layer] = game_row_block_count[layer-1];
+        }
+    }
+
+    draw_board();
 }
 
 const types = [I, J, L, O, S, T, Z]
@@ -90,6 +113,21 @@ const max = function(a, b) {
 
 Piece.prototype.restart = function() {
     clearInterval(this.timer);
+
+    for(let x=0; x<this.size_x; x++) {
+        for(let y=0; y<this.size_y; y++) {
+            if(this.type[this.state][x][y] == 1) {
+                game_row_block_count[this.pos_y+y]++;
+                console.log(this.pos_y+y, ":", game_row_block_count[this.pos_y+y]);
+                if(game_row_block_count[this.pos_y+y] >= NUMBER_OF_COLUMNS) {
+                    game_layer_to_destroy_index = this.pos_y+y;
+                    setTimeout(layer_blackout, 100);
+                    setTimeout(destroy_board_layer, 1000);
+                }
+            }
+        }
+    }
+
     this.generate();
 }
 
@@ -112,7 +150,9 @@ Piece.prototype.collision = function() {
 
     for(let i=0; i<this.size_x; i++) {
         let b = bottoms[i];
-        if(this.pos_x+i < NUMBER_OF_ROWS 
+        if(this.pos_x+i >= 0
+            && this.pos_y + b + 1 >= 0
+            && this.pos_x+i < NUMBER_OF_ROWS 
             && this.pos_y + b + 1 < NUMBER_OF_COLUMNS
             && game_board[this.pos_x+i][this.pos_y + b + 1] != BLOCK_EMPTY_COLOR)
             return true;
@@ -185,15 +225,16 @@ Piece.prototype.falling = function() {
 }
 
 const start = function() {
-    // set default block colors
+    // set default block colors and row block count to zero
     for(let row=0; row<NUMBER_OF_ROWS; row++) {
-        game_board[row] = []
+        game_board[row] = [];
+        game_row_block_count[row] = 0;
         for(let col=0; col<NUMBER_OF_COLUMNS; col++) {
-            game_board[row][col] = BLOCK_EMPTY_COLOR
+            game_board[row][col] = BLOCK_EMPTY_COLOR;
         }
     }
 
-    draw_board(game_board);
+    draw_board();
     piece = new Piece();
     console.log(piece);
     piece.draw();
