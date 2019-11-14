@@ -14,6 +14,7 @@ var game_speed = 1000;
 var game_row_block_count = []
 var game_board = []
 var game_layer_to_destroy_index = 0;
+var game_score = 0;
 
 const draw_square = function(row, col, color) {
     game_board[row][col] = color;
@@ -66,7 +67,7 @@ Piece.prototype.generate = function() {
     this.type = types[Math.floor(Math.random() * types.length)];
     this.size_x = this.type[0].length
     this.size_y = this.type[0][0].length
-    this.pos_x = NUMBER_OF_COLUMNS/2;
+    this.pos_x = Math.floor(Math.random() * (NUMBER_OF_COLUMNS-this.size_x));
     this.pos_y = 0;
     this.state = 0;
 
@@ -111,16 +112,36 @@ const max = function(a, b) {
     return (a>b) ? a : b;
 }
 
+Piece.prototype.check_height = function() {
+    for(let x=0; x<NUMBER_OF_ROWS; x++) {
+        for(let y=0; y<NUMBER_OF_COLUMNS; y++) {
+            if(game_board[y][x] != BLOCK_EMPTY_COLOR) {
+                return (NUMBER_OF_COLUMNS - x);
+            }
+        }
+    }
+}
+
 Piece.prototype.restart = function() {
     clearInterval(this.timer);
+
+    let height = this.check_height();
+    if(height >= NUMBER_OF_COLUMNS-1) {
+        return;
+    }
 
     for(let x=0; x<this.size_x; x++) {
         for(let y=0; y<this.size_y; y++) {
             if(this.type[this.state][x][y] == 1) {
                 game_row_block_count[this.pos_y+y]++;
-                console.log(this.pos_y+y, ":", game_row_block_count[this.pos_y+y]);
                 if(game_row_block_count[this.pos_y+y] >= NUMBER_OF_COLUMNS) {
                     game_layer_to_destroy_index = this.pos_y+y;
+
+                    game_score++;
+                    const score = document.getElementById("scorevalue");
+                    score.textContent = ("Score: " + game_score);
+                    game_speed = game_speed * 0.9;
+
                     setTimeout(layer_blackout, 100);
                     setTimeout(destroy_board_layer, 1000);
                 }
@@ -136,7 +157,7 @@ Piece.prototype.collision = function() {
     let bottoms = [];
     let max_bottom = undefined;
     for(let i=0; i<this.size_x; i++) {
-        bottoms[i] = null;
+        bottoms[i] = undefined;
         for(let j=this.size_y-1; j>=0; j--)
             if(shape[i][j] == 1) {
                 bottoms[i] = j;
@@ -150,6 +171,8 @@ Piece.prototype.collision = function() {
 
     for(let i=0; i<this.size_x; i++) {
         let b = bottoms[i];
+        if(b == undefined)
+            continue;
         if(this.pos_x+i >= 0
             && this.pos_y + b + 1 >= 0
             && this.pos_x+i < NUMBER_OF_ROWS 
@@ -235,8 +258,10 @@ const start = function() {
     }
 
     draw_board();
+    game_score = 0;
+    const score = document.getElementById("scorevalue");
+    score.textContent = ("Score: " + game_score);
     piece = new Piece();
-    console.log(piece);
     piece.draw();
 }
 
