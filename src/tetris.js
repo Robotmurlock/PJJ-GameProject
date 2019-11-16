@@ -15,6 +15,7 @@ var game_row_block_count = []
 var game_board = []
 var game_layer_to_destroy_index = 0;
 var game_score = 0;
+var pause = false;
 
 const draw_square = function(row, col, color) {
     game_board[row][col] = color;
@@ -52,6 +53,7 @@ const destroy_board_layer = function() {
     }
 
     draw_board();
+    pause = false;
 }
 
 const types = [I, J, L, O, S, T, Z]
@@ -144,6 +146,7 @@ Piece.prototype.restart = function() {
 
                     setTimeout(layer_blackout, 100);
                     setTimeout(destroy_board_layer, 1000);
+                    pause = true;
                 }
             }
         }
@@ -185,6 +188,9 @@ Piece.prototype.collision = function() {
 }
 
 Piece.prototype.update = function(x, y, state) {
+    if(pause)
+        return;
+
     if(this.check(x, y, state)) {
         let tmp = this.color;
         this.color = BLOCK_EMPTY_COLOR;
