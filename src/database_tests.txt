@@ -1,0 +1,5 @@
+curl --data "name=Mokoyo&score=123" localhost:3000/api/results
+
+curl -X DELETE localhost:3000/api/results/score/0
+
+curl -X DELETE localhost:3000/api/results/name/Mokoyo

@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const fs = require('fs') 
 
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -171,6 +170,28 @@ app.get("/api/results/:id_user", function(_, res, _) {
     res.status(200).json({
       result
     });
+  });
+});
+
+app.delete("/api/results/score/:sc", function(req, res, next) {
+  GameResultModel.deleteMany({ score: req.params.sc }, function (err) {
+    if (err) return handleError(err);
+  });
+
+
+  res.status(200).json({
+    result : "Deleted values with score: " + req.params.sc
+  });
+});
+
+app.delete("/api/results/name/:nm", function(req, res, next) {
+  GameResultModel.deleteMany({ player_name: req.params.nm }, function (err) {
+    if (err) return handleError(err);
+  });
+
+
+  res.status(200).json({
+    result : "Deleted values with name: " + req.params.nm
   });
 });
 
