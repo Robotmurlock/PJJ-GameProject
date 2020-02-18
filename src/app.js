@@ -195,6 +195,16 @@ app.delete("/api/results/name/:nm", function(req, res, next) {
   });
 });
 
+app.post("/api/results/update", function(req, res, next) {
+  GameResultModel.updateMany({ player_name: req.body.name }, { score: req.body.score }, function(err, res) {
+    if (err) return handleError(err);
+  });
+
+  res.status(200).json({
+    result : "Updated values: " + req.body.name + ", " + req.body.score
+  });
+});
+
 app.use(function(_, _, next) {
   const error = new Error("Unsupported method!");
   error.status = 405;
