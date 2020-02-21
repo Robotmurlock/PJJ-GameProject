@@ -1,0 +1,20 @@
+body {
+    background-image: url(./images/background.jpg);
+}
+
+#tetris {
+    background-color: darkblue;
+    text-align:center;
+}
+
+#score {
+    width: 600px;
+    height: 70px;
+    font-size: 40px;
+    color: teal;
+    background-color: white;
+}
+
+#scorevalue {
+    
+}
