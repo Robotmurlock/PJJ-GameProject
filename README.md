@@ -1,5 +1,18 @@
 # PJJ-GameProject
 
-# JavaScript project for LeviNine course
+## JavaScript project for LeviNine course
 
-![Example](docs/PJJ.gif)
+## How to use:
+
+run:
+`npm install`
+
+first terminal:
+`node server.js`
+
+second terminal:
+`npm start`
+
+## Final version:
+
+![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/react/docs/PPJ.gif)
