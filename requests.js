@@ -70,26 +70,6 @@ requests.get("/", function(req, res, next) {
   res.status(200).sendFile(__dirname + "/public/index.html");
 });
 
-requests.get("/style.css", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/style.css");
-});
-
-requests.get("/tetris.js", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/tetris.js");
-});
-
-requests.get("/tetrominoes.js", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/tetrominoes.js");
-});
-
-requests.get("/images/background.jpg", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/images/background.jpg");
-});
-
-requests.get("/favicon.ico", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/images/background.jpg");
-});
-
 requests.get("/api/results", function(req, res, next) {
   GameResultModel.find({}, function(err, result) {
     if (err) {
@@ -112,56 +92,7 @@ requests.get("/api/results", function(req, res, next) {
       return 0;
     });
 
-    let data = 
-      `<!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-        body {
-          background-image: url(../images/background.jpg);
-          background-color: rgba(255,255,255,0.6);
-          background-blend-mode: lighten;
-        }
-        div {
-          width: 200px;
-        }
-         
-        h2 {
-          font: 400 60px/1.5 Helvetica, Verdana, sans-serif;
-          margin: 0;
-          padding: 0;
-        }
-         
-        ul {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-        }
-         
-        li {
-          font: 200 40px/1.5 Helvetica, Verdana, sans-serif;
-          border-bottom: 1px solid #ccc;
-        }
-         
-        li:last-child {
-          border: none;
-        }
-        </style>
-        <link rel="shortcut icon" href="#" />
-      </head>
-      <body><main>`;
-
-    data += '<ul>';
-    for(let i=0; i<players.length; i++) {
-      data += `<li>` + players[i]["name"] + `: ` + players[i]["score"] + `</li>`;
-    }
-    data += '</ul>';
-      
-    data +=  `</main></body></html>`;
-
-
-
-    res.status(200).send(data);
+    res.status(200).send(players);
   });
 });
 
@@ -207,15 +138,6 @@ requests.post("/api/results/update", function(req, res, next) {
   res.status(200).json({
     result : "Updated values: " + req.body.name + ", " + req.body.score
   });
-});
-
-// *REACT*
-requests.get("/react", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/react.html");
-});
-
-requests.get("/manifest.json", function(req, res, next) {
-  res.status(200).sendFile(__dirname + "/public/manifest.json");
 });
 
 requests.use(function(req, res, next) {

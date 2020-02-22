@@ -8,6 +8,7 @@ class App extends Component {
       <div className="App">
         <div className="wrapper">
           <Highscore />
+          <p>Reload page to refresh Highscores</p>
         </div>
       </div>
     );

@@ -132,7 +132,7 @@ Piece.prototype.restart = function() {
         console.log("Game Over!");
 
         var request = new XMLHttpRequest();
-        var path = "http://localhost:3000/api/results";
+        var path = "http://localhost:8000/api/results";
         var player = prompt("Please enter your name:", "");
         request.open("POST", path, true);
         request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");

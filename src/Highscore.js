@@ -4,7 +4,7 @@ import "./Highscore.css";
 import GetResults from "./entries";
 
 class Highscore extends React.Component {
-  state = { results: [] };
+  state = { results: [1,2,3] };
 
   componentDidMount() {
     this.fromMongo();
@@ -12,7 +12,6 @@ class Highscore extends React.Component {
 
   async fromMongo() {
     let results = await GetResults.getResults();
-    results = results.sort((a, b) => a.score < b.score);
     this.setState({results:results});
   }
 
@@ -22,14 +21,9 @@ class Highscore extends React.Component {
     let rank = 1;
     let content = this.state.results.map(
       value => 
-      
         <tr className="row">
-          <td className="cell">{rank++}.</td>
           <td className="cell">{value.name}</td>
           <td className="cell">{value.score}</td>
-          <td className="cell">{
-              value.date.substring(0, value.date.lastIndexOf('.'))
-              .replace('T', ' ')}</td>
         </tr>
     );
 

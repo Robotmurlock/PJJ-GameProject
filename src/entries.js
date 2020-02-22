@@ -3,7 +3,7 @@ import axios from "axios";
 class GetResults {
   config = {
     baseURL: "http://localhost",
-    port: 2020
+    port: 8000
   };
   constructor() {
     this.httpClient = axios.create({
@@ -13,7 +13,7 @@ class GetResults {
 
   getResults() {
     return this.httpClient
-      .get("/")
+      .get("/api/results")
       .then(response =>
         response.data
       );
