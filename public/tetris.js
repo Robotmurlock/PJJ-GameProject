@@ -127,19 +127,22 @@ Piece.prototype.restart = function() {
     clearInterval(this.timer);
 
     let height = this.check_height();
-    if(height >= SIZE-5) {
+    if(height >= SIZE-1) {
         game_over = true;
         console.log("Game Over!");
 
         var request = new XMLHttpRequest();
         var path = "http://localhost:8000/api/results";
         var player = prompt("Please enter your name:", "");
-        request.open("POST", path, true);
-        request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-        request.send('{"name": "' + player + '", "score": ' + game_score + '}'); 
+        if(player != "") {
+            request.open("POST", path, true);
+            request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+            request.send('{"name": "' + player + '", "score": ' + game_score + '}'); 
+        }
 
         clearInterval(this.timer);
         start();
+        location.reload();
         return;
     }
 

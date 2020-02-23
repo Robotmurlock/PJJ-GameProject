@@ -11,8 +11,7 @@ body {
     width: 600px;
     height: 70px;
     font-size: 40px;
-    color: teal;
-    background-color: white;
+    color: rgb(209, 22, 184);
 }
 
 #scorevalue {
