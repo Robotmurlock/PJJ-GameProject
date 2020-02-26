@@ -60,15 +60,17 @@ const destroy_board_layer = function() {
 }
 
 // Support functions
-const valid_position = function(x, y) {
+const valid_position = function(x, y, j, i, state) {
     if(x < 0)
-        return false;
-    if(y < 0)
-        return false;
-    if(x >= SIZE)
         return false;
     if(y >= SIZE)
         return false;
+    if(x >= SIZE)
+        return false;
+
+    if(state[j, i] == 0 && game_board[y][x] != BLOCK_EMPTY_COLOR)
+        return false;
+
     return true;
 }
 
@@ -109,7 +111,7 @@ class Game {
         var shape = this.type[state];
         for(let i=0; i<this.size_x; i++) {
             for(let j=0; j<this.size_y; j++) {
-                if(shape[i][j] == 1 && !valid_position(y+j, x+i, state))
+                if(shape[i][j] == 1 && !valid_position(y+j, x+i, j, i, state))
                     return false;
             }
         }
@@ -138,7 +140,7 @@ class Game {
             var request = new XMLHttpRequest();
             var path = "http://localhost:8000/api/results";
             var player = prompt("Please enter your name:", "");
-            if(player != "") {
+            if(player != null && player != undefined && player != "") {
                 request.open("POST", path, true);
                 request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
                 request.send('{"name": "' + player + '", "score": ' + game_score + '}'); 

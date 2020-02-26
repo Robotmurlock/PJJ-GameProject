@@ -18,12 +18,11 @@ class Highscore extends React.Component {
   render() {
     console.log(this.state);
 
-    let rank = 1;
     let content = this.state.results.map(
       value => 
         <tr className="row">
-          <td className="cell">{value.name}</td>
-          <td className="cell">{value.score}</td>
+          <td className="cell" id={value.name}>{value.name}</td>
+          <td className="cell" id={value.name}>{value.score}</td>
         </tr>
     );
 

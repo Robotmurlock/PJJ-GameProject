@@ -23,7 +23,38 @@ body {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 8px;
+    background-color: rgb(11, 100, 173);
+}
+
+#PinkiePie {
     background-color: rgb(209, 22, 184);
 }
-  
+
+#RainbowDash {
+    background-color: rgb(7, 243, 243);
+}
+
+#TwilightSparkle {
+    background-color: rgb(122, 8, 189);
+}
+
+#Fluttershy {
+    background-color: rgb(213, 216, 79);
+}
+ 
+#AppleJack {
+    background-color: rgb(228, 145, 12);
+}
+
+#Rarity {
+    background-color: rgb(241, 241, 241);
+}
+
+#DerpyHooves {
+    background-color: rgb(107, 106, 106);
+}
+
+#LeviNine {
+    background-color: rgb(255, 0, 0);
+}
   
