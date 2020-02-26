@@ -15,4 +15,4 @@ second terminal:
 
 ## Final version:
 
-![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/react/docs/PPJ.gif)
+![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PPJ.gif)
