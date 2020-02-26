@@ -275,6 +275,8 @@ document.addEventListener('keydown', function(event) {
         game.down();
     } else if(event.keyCode == 32) {
         game.rotate();
+    } else if(event.keyCode == 70) {
+        document.body.style.background = "#f3f3f3 url('images/friendship.jpg') right top";
     }
 });
 
