@@ -15,4 +15,10 @@ second terminal:
 
 ## Final version:
 
-![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PPJ.gif)
+### Gameplay:
+
+![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PPJ1.gif)
+
+### Saving results:
+
+![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PPJ1.gif)
