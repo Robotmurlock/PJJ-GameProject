@@ -21,4 +21,4 @@ second terminal:
 
 ### Saving results:
 
-![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PJJ1.gif)
+![Example](https://github.com/Robotmurlock/PJJ-GameProject/blob/master/docs/PJJ2.gif)
