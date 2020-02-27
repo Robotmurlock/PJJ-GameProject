@@ -63,6 +63,8 @@ const destroy_board_layer = function() {
 const valid_position = function(x, y, j, i, state) {
     if(x < 0)
         return false;
+    if(y < 0)
+        return false;
     if(y >= SIZE)
         return false;
     if(x >= SIZE)
